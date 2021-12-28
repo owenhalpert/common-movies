@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
-"""
-02-mar-2020
-
-@author: senabayram
+""
+original code by @senabayram
+forked / updated by @owenhalpert
 """
 import urllib.request
 import random
