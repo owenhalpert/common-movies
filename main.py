@@ -1,96 +1,54 @@
 # -*- coding: utf-8 -*-
-""
+"""
 original code by @senabayram
 forked / updated by @owenhalpert
-""
-
+"""
 import urllib.request
 import random
 
-username1 = input("Your username: ")
-try:
-    userpage = urllib.request.urlopen("https://letterboxd.com/" + username1 + "/watchlist/page/1/")
-except:
-    print("Invalid username.")
-    exit()
+username1, username2 = input("Your username: "), input("Your friend's username: ")
 
-userpagehtml = userpage.read().decode("utf-8")
-page_num = 1
-
-while "\n" in userpagehtml:
-        userpagehtml = userpagehtml.split("\n")
-        
-for line in userpagehtml:
-    if "paginate-current" in line:
-        pos = line.find("paginate-current") + len("paginate-current")
-        if line.find("page/3", pos) == -1:
-            page_num = 2
-        else:
-            page_pos = line.find("page/3", pos) + len("page/3")
-            if line.find("page/", page_pos) != -1:
-                reduced = line[line.find("page/", page_pos) + len("page/"):]
-                page_num = int(reduced.split("/")[0])
+def watchlist_to_lst(username):
+    try:
+        userpage = urllib.request.urlopen("https://letterboxd.com/" + username + "/watchlist/page/1/")
+    except:
+        print("Invalid username.")
+        exit()
+    userpagehtml = userpage.read().decode("utf-8")
+    page_num = 1
+    while "\n" in userpagehtml:
+            userpagehtml = userpagehtml.split("\n")      
+    for line in userpagehtml:
+        if "paginate-current" in line:
+            pos = line.find("paginate-current") + len("paginate-current")
+            if line.find("page/3", pos) == -1:
+                page_num = 2
             else:
-                page_num = 3
-    
-person1_lst = []
-              
-for page in range(1, page_num + 1):
-    watchlist = urllib.request.urlopen("https://letterboxd.com/" + username1 + "/watchlist/page/" + str(page) + "/")
-    watchlisthtml = watchlist.read().decode("utf-8")
-    while "\n" in watchlisthtml:
-        watchlisthtml = watchlisthtml.split("\n")
-    for line in watchlisthtml:
-        if "film-poster" in line:
-            film_strt = line.find("alt=") + len("alt=")
-            film_end = line.find("/>", film_strt)
-            try:
-                person1_lst.append(line[film_strt:film_end]) 
-            except:
-                break   
+                page_pos = line.find("page/3", pos) + len("page/3")
+                if line.find("page/", page_pos) != -1:
+                    reduced = line[line.find("page/", page_pos) + len("page/"):]
+                    page_num = int(reduced.split("/")[0])
+                else:
+                    page_num = 3 
+    lst = []          
+    for page in range(1, page_num + 1):
+        watchlist = urllib.request.urlopen("https://letterboxd.com/" + username + "/watchlist/page/" + str(page) + "/")
+        watchlisthtml = watchlist.read().decode("utf-8")
+        while "\n" in watchlisthtml:
+            watchlisthtml = watchlisthtml.split("\n")
+        for line in watchlisthtml:
+            if "film-poster" in line:
+                film_strt = line.find("alt=") + len("alt=")
+                film_end = line.find("/>", film_strt)
+                try:
+                    lst.append(line[film_strt:film_end]) 
+                except:
+                    break
+    return lst
 
-username2 = input("Their username: ")
-try:
-    userpage = urllib.request.urlopen("https://letterboxd.com/" + username2 + "/watchlist/page/1/")
-except:
-    print("Invalid username!")
-    exit()
-userpagehtml = userpage.read().decode("utf-8")
-page_num = 1
+lst1, lst2 = watchlist_to_lst(username1), watchlist_to_lst(username2)
 
-while "\n" in userpagehtml:
-        userpagehtml = userpagehtml.split("\n")
-        
-for line in userpagehtml:
-    if "paginate-current" in line:
-        pos = line.find("paginate-current") + len("paginate-current")
-        if line.find("page/3", pos) == -1:
-            page_num = 2
-        else:
-            page_pos = line.find("page/3", pos) + len("page/3")
-            if line.find("page/", page_pos) != -1:
-                reduced = line[line.find("page/", page_pos) + len("page/"):]
-                page_num = int(reduced.split("/")[0])
-            else:
-                page_num = 3
-              
-person2_lst = []
-
-for page in range(1, page_num + 1):
-    watchlist = urllib.request.urlopen("https://letterboxd.com/" + username2 + "/watchlist/page/" + str(page) + "/")
-    watchlisthtml = watchlist.read().decode("utf-8")
-    while "\n" in watchlisthtml:
-        watchlisthtml = watchlisthtml.split("\n")
-    for line in watchlisthtml:
-        if "film-poster" in line:
-            film_strt = line.find("alt=") + len("alt=")
-            film_end = line.find("/>", film_strt)
-            try:
-                person2_lst.append(line[film_strt:film_end]) 
-            except:
-                break
-
-common_set = list(set(person1_lst) & set(person2_lst))
+common_set = list(set(lst1) & set(lst2))
 length = len(common_set)
 if length > 1:
     print(f"\nGood news! {username1} and {username2} have {length} films in common!")
