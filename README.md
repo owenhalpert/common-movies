@@ -1,9 +1,7 @@
-# letterboxd-watchlist-to-txt
+# common-movies
 
-this programme converts your Letterboxd watchlist into a .txt file.
+This program, forked from https://github.com/senabayram/letterboxd-watchlist-to-txt, will compare your watchlist with another user's and list common films. If you have more than one film in common, it will also pick one for you at random.
 
-the code is written in Python 3.7. To use the programme, you need to have Python in your computer.
+Download or pull the project then run main.py in your terminal. You will be prompted for both users' Letterboxd usernames.
 
-once you download the code, open it with Python, then write your Letterboxd username when asked. The programme writes your watchlist into a .txt file in the same folder where the code is located.
-
-thanks for downloading the code!
+Enjoy!
