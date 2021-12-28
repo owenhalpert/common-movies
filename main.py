@@ -12,7 +12,7 @@ def watchlist_to_lst(username):
     try:
         userpage = urllib.request.urlopen("https://letterboxd.com/" + username + "/watchlist/page/1/")
     except:
-        print("Invalid username.")
+        print("One or more invalid username inputs.")
         exit()
     userpagehtml = userpage.read().decode("utf-8")
     page_num = 1
