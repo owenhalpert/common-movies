@@ -89,7 +89,7 @@ if length > 1:
         print(item)
     print('\nFeeling lucky? Here is a random one to watch now: ' + random.choice(list(result)).replace('"', ''))
 elif length == 1:
-    print(f"\nGood news! These inputted users have 1 film in common!")
+    print(f"\nGood news! These users have 1 film in common!")
     print('\nHere it is: ' + list(result)[0].replace('\\', ''))
 else:
     print(f"Sorry! These users have no films in common!")
