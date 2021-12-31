@@ -6,13 +6,35 @@ forked / updated by @owenhalpert
 import urllib.request
 import random
 
-username1, username2 = input("Your username: "), input("Your friend's username: ")
+print("""
+Welcome to the Letterboxd Common Movies Tool.
+This tool will generate a list of common movies between two or more Letterboxd users. 
+Please enter the usernames of the two or more users you wish to compare, and type 'done' when you have entered them all.
+
+""")
+
+usernames, done = [], False
+
+#Get usernames
+while not done: 
+    username = input("Enter a Letterboxd username, or write 'done': ")
+    if username == "":
+        print("Error: You must enter a valid username.")
+        username = None
+    if username == "done":
+        done = True
+    else:
+        usernames.append(username)
+
+if len(usernames) == 1:
+    print("Error: You must enter at least two usernames.")
+    exit()
 
 def watchlist_to_lst(username):
     try:
         userpage = urllib.request.urlopen("https://letterboxd.com/" + username + "/watchlist/page/1/")
     except:
-        print("One or more invalid username inputs. Please try again.")
+        print("Error: One or more invalid username inputs. Please try again.")
         exit()
     userpagehtml = userpage.read().decode("utf-8")
     page_num = 1
@@ -46,23 +68,31 @@ def watchlist_to_lst(username):
                     break
     return lst
 
-lst1, lst2 = watchlist_to_lst(username1), watchlist_to_lst(username2)
+#Get watchlists for each user
+p = [] 
+for user in usernames: 
+    p.append(watchlist_to_lst(user))
 
-common_set = list(set(lst1) & set(lst2))
-length = len(common_set)
+#Get common movies
+result = set(p[0]) 
+for s in p[1:]:
+    result.intersection_update(s)
+
+#Print results
+length = len(result) 
 if length > 1:
-    print(f"\nGood news! {username1} and {username2} have {length} films in common!")
+    print(f"\nGood news! These users have {length} films in common!")
     print('\nHere they are:')
-    for item in common_set:
+    for item in result:
         if '\\' in item:
             item = item.replace("\\", "'")
         print(item)
-    print('\nFeeling lucky? Here is a random one to watch now: ' + random.choice(common_set).replace('"', ''))
+    print('\nFeeling lucky? Here is a random one to watch now: ' + random.choice(list(result)).replace('"', ''))
 elif length == 1:
-    print(f"\nGood news! {username1} and {username2} have {length} film in common!")
-    print('\nHere it is: ' + common_set[0].replace('\\', ''))
+    print(f"\nGood news! These inputted users have 1 film in common!")
+    print('\nHere it is: ' + list(result)[0].replace('\\', ''))
 else:
-    print(f"Sorry! {username1} and {username2} have no films in common!")
+    print(f"Sorry! These users have no films in common!")
 
 
     
