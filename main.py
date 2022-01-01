@@ -2,6 +2,7 @@
 """
 original code by @senabayram
 forked / updated by @owenhalpert
+letterboxd cofounder Matthew Buchanan said this was "Nice"
 """
 import urllib.request
 import random
